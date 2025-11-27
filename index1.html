@@ -1,0 +1,341 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Fatih — Currency Playground</title>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js" defer></script>
+
+  <style>
+    :root{
+      --bg:#070707;
+      --card:#0f1724;
+      --navy:#0b2240;
+      --gold:#d4af37;
+      --muted:#9aa4b2;
+      --glass: rgba(255,255,255,0.03);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+    }
+
+    *{box-sizing:border-box}
+    html,body{height:100%;margin:0;background:
+      radial-gradient(1200px 500px at 10% 10%, rgba(13,40,80,0.12), transparent 8%),
+      linear-gradient(180deg,#061122 0%, #07121a 50%, #050506 100%); color:#e6eef6;}
+
+    .wrap{
+      min-height:100vh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:32px;
+      gap:28px;
+    }
+
+    .panel{
+      width:100%;
+      max-width:1000px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      border-radius:18px;
+      padding:28px;
+      box-shadow: 0 10px 40px rgba(2,6,23,0.6), inset 0 1px 0 rgba(255,255,255,0.02);
+      border: 1px solid rgba(255,255,255,0.03);
+      display:grid;
+      grid-template-columns: 420px 1fr;
+      gap:20px;
+      align-items:center;
+    }
+
+    .brand {
+      padding: 18px;
+      border-radius:12px;
+      background: linear-gradient(135deg, rgba(11,34,64,0.6), rgba(2,6,23,0.4));
+      display:flex;
+      flex-direction:column;
+      gap:18px;
+      align-items:flex-start;
+    }
+
+    .logo {
+      display:flex;
+      gap:12px;
+      align-items:center;
+    }
+
+    .square {
+      width:64px;height:64px;border-radius:12px;
+      background: linear-gradient(135deg,var(--navy),#001029);
+      display:flex;align-items:center;justify-content:center;
+      box-shadow: 0 6px 18px rgba(2,6,23,0.6);
+      border: 1px solid rgba(212,175,55,0.12);
+    }
+
+    .square strong { font-size:28px; color:var(--gold); letter-spacing:0.6px; }
+
+    h1 {
+      margin:0;
+      font-size:20px;
+      color:var(--gold);
+      letter-spacing:0.6px;
+    }
+    p.lead { margin:0;color:var(--muted); font-size:13px; }
+
+    .big {
+      font-size:28px;
+      font-weight:700;
+      letter-spacing:0.4px;
+      color:#f8fafc;
+    }
+
+    .converter{
+      padding:18px;
+      border-radius:12px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.0));
+      min-height:180px;
+      display:flex;
+      flex-direction:column;
+      gap:12px;
+    }
+
+    .row{ display:flex; gap:12px; align-items:center; }
+    label{ display:block; font-size:12px; color:var(--muted); margin-bottom:6px; }
+
+    input[type="number"],
+    select {
+      width:100%;
+      padding:12px 14px;
+      border-radius:10px;
+      border:1px solid rgba(255,255,255,0.04);
+      background:var(--glass);
+      color:#e6eef6;
+      font-size:15px;
+      outline:none;
+    }
+    select {
+      background: linear-gradient(135deg, #0b2240, #001529);
+      color: var(--gold);
+      font-weight: 600;
+      border: 1px solid rgba(212,175,55,0.25);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+    }
+    select option {
+      background-color: #0f1724;
+      color: #d4af37;
+      padding: 8px;
+    }
+
+    select option:hover {
+      background-color: #132540;
+    }
+
+
+    .btn {
+      padding:10px 16px;
+      border-radius:10px;
+      border:none;
+      cursor:pointer;
+      background: linear-gradient(90deg,var(--navy), #03223a);
+      color:var(--gold);
+      font-weight:600;
+      box-shadow: 0 8px 18px rgba(3,20,40,0.5);
+    }
+
+    .btn.secondary {
+      background:transparent;
+      border:1px solid rgba(255,255,255,0.04);
+      color:var(--muted);
+    }
+
+    .result {
+      margin-top:8px;
+      padding:14px;
+      border-radius:10px;
+      background:linear-gradient(90deg, rgba(255,255,255,0.01), rgba(255,255,255,0.02));
+      border:1px solid rgba(255,255,255,0.03);
+      font-weight:700;
+      font-size:18px;
+      color:#dff3ff;
+    }
+
+    .small {
+      font-size:12px;color:var(--muted);
+    }
+
+    footer.note {
+      margin-top:12px;
+      font-size:12px;
+      color:var(--muted);
+    }
+
+    @media (max-width:900px){
+      .panel{ grid-template-columns: 1fr; padding:18px; }
+      .brand{ flex-direction:row; align-items:center; justify-content:space-between; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="panel" id="panel">
+      <div class="brand" id="brand">
+        <div class="logo">
+          <div class="square" aria-hidden="true"><strong>FTH</strong></div>
+          <div>
+            <h1>Fatih</h1>
+            <p class="lead">Muhammad Fatih Abdurrohman</p>
+          </div>
+        </div>
+
+        <div>
+          <div class="big" id="greeting">welcome to my convert money</div>
+          <p class="small">Pilih mata uang, masukkan jumlah, lalu tekan Convert. Lalu mainkan tombol animasi.</p>
+        </div>
+
+      </div>
+
+      <div class="converter" id="converter">
+        <div class="row" style="align-items:flex-start;">
+          <div style="flex:1">
+            <label for="amount">Jumlah</label>
+            <input id="amount" type="number" value="100" min="0" step="any" />
+          </div>
+
+          <div style="width:140px">
+            <label for="from">Dari</label>
+            <select id="from">
+              <option value="IDR">IDR – Rupiah</option>
+              <option value="USD" selected>USD – US Dollar</option>
+              <option value="EUR">EUR – Euro</option>
+            </select>
+          </div>
+
+          <div style="width:140px">
+            <label for="to">Ke</label>
+            <select id="to">
+              <option value="IDR" selected>IDR – Rupiah</option>
+              <option value="USD">USD – US Dollar</option>
+              <option value="EUR">EUR – Euro</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="row">
+          <button class="btn" id="convertBtn">Convert!</button>
+          <button class="btn secondary" id="swapBtn">Tukar Mata Uang</button>
+          <div style="margin-left:auto;text-align:right;">
+            <div class="small">Rates: <span id="rateInfo">—</span></div>
+            <div class="small">Last checked: <span id="lastChecked">—</span></div>
+          </div>
+        </div>
+
+        <div id="result" class="result">Hasil akan muncul di sini.</div>
+
+        <footer class="note">
+          Menggunakan <strong>exchangerate.host</strong> (gratis) untuk mengambil kurs. Jika ingin offline, ubah variabel `USE_API` di script.
+        </footer>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const USE_API = true;
+    const FALLBACK_RATES = {
+      "USD": {"USD":1, "IDR":15600, "EUR":0.92},
+      "IDR": {"USD":1/15600, "IDR":1, "EUR":0.92/15600},
+      "EUR": {"USD":1.087, "IDR":1.087*15600, "EUR":1}
+    };
+
+    const $ = id => document.getElementById(id);
+    const amountEl = $('amount');
+    const fromEl = $('from');
+    const toEl = $('to');
+    const convertBtn = $('convertBtn');
+    const swapBtn = $('swapBtn');
+    const resultEl = $('result');
+    const rateInfoEl = $('rateInfo');
+    const lastCheckedEl = $('lastChecked');
+
+    async function fetchRates(base){
+      try {
+        const resp = await fetch('https://api.exchangerate.host/latest?base=' + encodeURIComponent(base));
+        if(!resp.ok) throw new Error('Network response not ok');
+        const data = await resp.json();
+        return data.rates || null;
+      } catch (e) {
+        console.warn('Fetch rates failed', e);
+        return null;
+      }
+    }
+
+    async function getRate(from, to){
+      if(USE_API){
+        const rates = await fetchRates(from);
+        if(rates && rates[to] !== undefined){
+          return {rate: rates[to], source: 'API'};
+        }
+      }
+      const r = (FALLBACK_RATES[from] && FALLBACK_RATES[from][to]) || null;
+      return {rate: r, source: 'FALLBACK'};
+    }
+
+    async function convert(){
+      const amount = parseFloat(amountEl.value) || 0;
+      const from = fromEl.value;
+      const to = toEl.value;
+
+      if(!amount){ resultEl.textContent = 'Masukkan jumlah yang valid.'; return; }
+
+      convertBtn.disabled = true;
+      convertBtn.textContent = 'Menghitung...';
+
+      const {rate, source} = await getRate(from, to);
+
+      if(rate == null){
+        resultEl.textContent = 'Gagal mengambil kurs. Coba lagi nanti.';
+        rateInfoEl.textContent = '—';
+        lastCheckedEl.textContent = '—';
+        convertBtn.disabled = false;
+        convertBtn.textContent = 'Convert!';
+        return;
+      }
+
+      const converted = amount * rate;
+      const nfFrom = new Intl.NumberFormat('id-ID', {style:'currency', currency: from});
+      const nfTo = new Intl.NumberFormat('id-ID', {style:'currency', currency: to});
+
+      const displayFrom = (nfFrom.format(amount) || amount.toFixed(2)) + ` (${from})`;
+      const displayTo = (nfTo.format(converted) || converted.toFixed(2)) + ` (${to})`;
+
+      resultEl.textContent = `${displayFrom} → ${displayTo}`;
+      rateInfoEl.textContent = `1 ${from} = ${rate} ${to} (${source})`;
+      lastCheckedEl.textContent = new Date().toLocaleString('id-ID');
+
+      if(window.gsap){
+        gsap.fromTo(resultEl, {scale:0.98, opacity:0.6}, {scale:1, opacity:1, duration:0.55, ease:"elastic.out(1, 0.6)"});
+      }
+
+      convertBtn.disabled = false;
+      convertBtn.textContent = 'Convert!';
+    }
+
+    swapBtn.addEventListener('click', () => {
+      const a = fromEl.value;
+      fromEl.value = toEl.value;
+      toEl.value = a;
+      if(window.gsap) gsap.fromTo(document.querySelector('#panel'), {x:-6}, {x:0, duration:0.3, ease:"power3.out"});
+    });
+
+    convertBtn.addEventListener('click', convert);
+
+    amountEl.addEventListener('keydown', (e) => { if(e.key === 'Enter') convert(); });
+
+    window.addEventListener('load', () => {
+      if(window.gsap){
+        gsap.from(".panel", {y:22, opacity:0, duration:0.7, ease:"power3.out"});
+        gsap.from(".logo .square", {scale:0.7, opacity:0, duration:0.6, delay:0.2});
+        gsap.from(".big", {x:-18, opacity:0, duration:0.6, delay:0.25});
+      }
+      convert();
+    });
+  </script>
+</body>
+</html>
